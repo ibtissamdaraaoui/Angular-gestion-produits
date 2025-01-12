@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'; 
 import { Produit } from '../model/produit.model';  // 
 import { Categorie } from '../model/categorie.model';
+import { Image } from '../model/image.model'; 
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CategorieWrapper } from '../model/catgorieWrapped.model';
@@ -98,6 +99,16 @@ supprimerProduit(id : number) {
      ajouterCategorie( cat: Categorie):Observable<Categorie>{
       return this.http.post<Categorie>(this.apiURLCat, cat, httpOptions);
      }
+     uploadImage(file: File, filename: string): Observable<Image>{
+      const imageFormData = new FormData();
+      imageFormData.append('image', file, filename);
+      const url = `${this.apiURL + '/image/upload'}`;
+      return this.http.post<Image>(url, imageFormData);
+      }
+      loadImage(id: number): Observable<Image> {
+      const url = `${this.apiURL +'/image/get/info'}/${id}`;
+      return this.http.get<Image>(url);
+      }
 
 
 }

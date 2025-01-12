@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Produit } from '../model/produit.model';
+import { Image } from '../model/image.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProduitService } from '../services/produit.service';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +19,7 @@ export class UpdateProduitComponent implements OnInit {
 
   categories!: Categorie[];
   updatedCatId!: number;
+  myImage! : string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -27,15 +29,19 @@ export class UpdateProduitComponent implements OnInit {
 
   ngOnInit(): void {
     this.produitService.listeCategories().
-    subscribe(cats => {console.log(cats);
-                       this.categories = cats._embedded.categories;
-                       }
-  );
-    this.produitService.consulterProduit(this.activatedRoute.snapshot.params['id']).
-    subscribe( prod =>{ this.currentProduit = prod; 
-      this.updatedCatId =   this.currentProduit.categorie.idCat;
-    
-    } ) ;
+    subscribe(cats => {this.categories = cats._embedded.categories;
+      console.log(cats);
+      });
+      
+      this.produitService.consulterProduit(this.activatedRoute.snapshot.params['id']).
+      subscribe( prod =>{ this.currentProduit = prod;
+      this.updatedCatId = prod.categorie.idCat;
+      this.produitService
+      .loadImage(this.currentProduit.image.idImage)
+      .subscribe((img: Image) => {
+      this.myImage = 'data :' + img.type + ';base64,' + img.image;
+      });
+      } ) ;
     }
 
 
